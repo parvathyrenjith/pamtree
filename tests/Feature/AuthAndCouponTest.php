@@ -58,7 +58,7 @@ class AuthAndCouponTest extends TestCase
         $token = $user->createToken('test')->plainTextToken;
 
         $response = $this->withHeader('Authorization', 'Bearer ' . $token)
-                         ->postJson('/api/coupon/redeem', [
+                         ->postJson('/api/redeem', [
                              'coupon_code' => 'DISCOUNT20',
                              'coupon_value' => 20.00
                          ]);
