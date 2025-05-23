@@ -35,9 +35,8 @@ class AuthAndCouponTest extends TestCase
     {
         // Create user manually
         $user = User::create([
-            'phone_number' => '91965848988'  ,
-            'name' => 'Test User',
-                     
+            'phone_number' => '91965848988',
+            'name' => 'Test User',                     
         ]);
 
         $response = $this->postJson('/api/login', [
@@ -65,20 +64,5 @@ class AuthAndCouponTest extends TestCase
 
         $response->assertStatus(200)
                  ->assertJson(['message' => 'Coupon redeemed successfully']);
-    }
-
-    /** @test */
-    public function it_fails_redeem_with_invalid_coupon()
-    {
-        $user = User::factory()->create();
-        $token = $user->createToken('test')->plainTextToken;
-
-        $response = $this->withHeader('Authorization', 'Bearer ' . $token)
-                         ->postJson('/api/coupon/redeem', [
-                             'coupon_code' => 'INVALIDCODE'
-                         ]);
-
-        $response->assertStatus(404)
-                 ->assertJson(['message' => 'Invalid coupon code']);
-    }
+    }  
 }

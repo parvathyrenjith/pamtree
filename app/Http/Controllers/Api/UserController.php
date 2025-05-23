@@ -70,7 +70,7 @@ class UserController extends Controller
     public function loginUser(Request $request)
     {
         $request->validate([
-            'phone_number' => 'required|string|max:255',
+            'phone_number' => 'required|string|max:12',
         ]);
 
         // Check if the user exists
