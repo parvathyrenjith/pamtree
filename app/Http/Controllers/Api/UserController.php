@@ -4,6 +4,7 @@ namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use App\Http\Resources\UserResource;
 
 use App\Models\User;
 
@@ -17,10 +18,10 @@ class UserController extends Controller
      */
     public function registerUser(Request $request)
     {
-
+       // dd(strlen($request->phone_number));
         $request->validate([
             'full_name' => 'required|string|max:255',
-            'phone_number' => 'required|string|max:255|unique:users,phone_number',
+            'phone_number' => 'required|string|regex:/^[0-9]{10,12}$/|unique:users,phone_number',
         ]);
 
         // Check if the user already exists
@@ -69,8 +70,9 @@ class UserController extends Controller
 
     public function loginUser(Request $request)
     {
+       // dd($request->phone_number);
         $request->validate([
-            'phone_number' => 'required|string|max:12',
+            'phone_number' => 'required|integer|min:10',
         ]);
 
         // Check if the user exists
@@ -118,11 +120,13 @@ class UserController extends Controller
             }
             $user = User::withSum('redeemedCoupons', 'coupon_value')->where('id', auth()->user()->id)
                ->first();
-            return response()->json([
-                'status' => true,
-                'message' => 'User details retrieved successfully',
-                'data' => $user
-            ]);
+            if (!$user) {
+                return response()->json([
+                    'status' => false,
+                    'message' => 'User not found',
+                ]);
+            }
+            return UserResource::make($user);
         } catch (\Exception $e) {
             return response()->json([
                 'status' => false,
